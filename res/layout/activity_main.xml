@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/fileListTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/fileListTitle"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/fileListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+    </ListView>
+    
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fileChosenLabel" />
+
+            <TextView
+                android:id="@+id/fileChosenTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:paddingLeft="10dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/chooseFileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fileButtonLabel"
+        android:layout_gravity="bottom" />
+    
+</LinearLayout>

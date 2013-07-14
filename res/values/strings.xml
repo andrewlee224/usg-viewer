@@ -1,0 +1,15 @@
+<resources>
+
+    <!-- General & MainActivity -->
+    <string name="app_name">USGViewer</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="fileChosenLabel">File chosen: </string>
+    <string name="fileListTitle">Files found: </string>
+    <string name="fileButtonLabel">Proceed</string>
+    <string name="title_activity_image_view">ImageViewActivity</string>
+
+    <!-- ImageViewActivity -->
+    <string name="usgImgDescr">Ultrasound image</string>
+</resources>
