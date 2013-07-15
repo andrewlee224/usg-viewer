@@ -17,6 +17,8 @@ public class RFImage implements TimeViewable {
 	private int width;
 	private int height;
 	private int frames;
+	private int transmitFreq;
+	private int lineDensity;
 	private int currentFrame;
 
 	public RFImage(File file) {
@@ -32,6 +34,8 @@ public class RFImage implements TimeViewable {
 		width = headers.get(2);
 		height = headers.get(3);
 		frames = headers.get(1);
+		transmitFreq = headers.get(14);
+		lineDensity = headers.get(17);
 		ds.skipBytes(4);
 		currentFrame = 1;
 		//frame = new short[width][height];
@@ -64,6 +68,15 @@ public class RFImage implements TimeViewable {
 		Bitmap bmp = Bitmap.createBitmap(intFrame1d, width, height, Bitmap.Config.ARGB_4444);
 		
 		return bmp;
+	}
+	
+	public double calcTGC(int frameDepth, int originalValue) {
+		double depthCm = frameDepth/lineDensity;
+		double TGCalpha = 0.25; 	// [dB / MHz*cm]
+		
+		double correctedValue = originalValue * Math.exp(-TGCalpha * transmitFreq * depthCm);
+		
+		return correctedValue;
 	}
 	
 	public int getWidth() {
