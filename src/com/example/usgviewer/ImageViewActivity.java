@@ -6,9 +6,11 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /* Obtain image path from intent bundle, load image and create 
@@ -18,6 +20,7 @@ import android.widget.Toast;
 public class ImageViewActivity extends Activity {
 
 	private ImageView usgImgView;
+	private TextView frameNoText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,11 +35,18 @@ public class ImageViewActivity extends Activity {
         try {
         	rfImg.createHeaders();
 	        Bitmap initialFrame = rfImg.getImg();
+	        BitmapDrawable frameDrawable = new BitmapDrawable(initialFrame);
 	        usgImgView = (ImageView) findViewById(R.id.imageView1);
-	        usgImgView.setImageBitmap(initialFrame);
+	        //usgImgView.setImageBitmap(initialFrame);
+	        usgImgView.setBackgroundDrawable(frameDrawable);
+	        //usgImgView.setMaxHeight(50);
+	        usgImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         } catch (IOException e) {
         	Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+        
+        frameNoText = (TextView) findViewById(R.id.frameNoText);
+        frameNoText.setText("Frame " + rfImg.getCurrentFrame() + " of " + rfImg.getFrames());
         
     }
 
