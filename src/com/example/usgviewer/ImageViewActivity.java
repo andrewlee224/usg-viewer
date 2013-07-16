@@ -9,6 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +23,11 @@ import android.widget.Toast;
 public class ImageViewActivity extends Activity {
 
 	private ImageView usgImgView;
+	private RFImage rfImg;
+	private int currentFrame;
 	private TextView frameNoText;
+	private Button prevFrameButton;
+	private Button nextFrameButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,7 +37,7 @@ public class ImageViewActivity extends Activity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         
-        RFImage rfImg = new RFImage(new File(bundle.getString("IMG_FILENAME")));
+        rfImg = new RFImage(new File(bundle.getString("IMG_FILENAME")));
 
         try {
         	rfImg.createHeaders();
@@ -46,10 +53,46 @@ public class ImageViewActivity extends Activity {
         }
         
         frameNoText = (TextView) findViewById(R.id.frameNoText);
-        frameNoText.setText("Frame " + rfImg.getCurrentFrame() + " of " + rfImg.getFrames());
+        updateFrameNumTextView();
         
+        prevFrameButton = (Button) findViewById(R.id.prevFrameButton);
+        nextFrameButton = (Button) findViewById(R.id.nextFrameButton);
+        
+        prevFrameButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View view) {
+        		int prevFrame = rfImg.getCurrentFrame() - 1;
+        		updateImgView(prevFrame);
+        		updateFrameNumTextView();
+        	}
+        });
+        
+        nextFrameButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View view) {
+        		int nextFrame = rfImg.getCurrentFrame() + 1;
+        		updateImgView(nextFrame);
+        		updateFrameNumTextView();
+        	}
+        });
     }
 
+    public void setBitmapToView(Bitmap bmp, ImageView imgView) {
+    	BitmapDrawable frameDrawable = new BitmapDrawable(bmp);
+    	imgView.setBackgroundDrawable(frameDrawable);
+    }
+    
+    public void updateImgView(int frame) {
+    	try {
+	    	Bitmap bmp = rfImg.getAtFrame(frame);
+	    	setBitmapToView(bmp, usgImgView);
+    	} catch (IOException e) {
+    		Toast.makeText(this, "Error while loading frame", Toast.LENGTH_LONG).show();
+    	}
+    }
+    
+    public void updateFrameNumTextView() {
+    	frameNoText.setText("Frame " + rfImg.getCurrentFrame() + " of " + rfImg.getFrames());
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_image_view, menu);
