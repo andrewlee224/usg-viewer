@@ -43,10 +43,12 @@ public class RFImage implements TimeViewable {
 	}
 	
 	public Bitmap getImg() throws IOException {
-		return getAtFrame(1);
+		return getAtFrame(9);
 	}
 	
 	public Bitmap getAtFrame(int prefFrame) throws IOException {
+		if (prefFrame > frames) return null;
+		
 		int frameDiff = prefFrame - currentFrame;
 		ds.skipBytes(frameDiff*(4 + width*height*2));
 		currentFrame = prefFrame;
@@ -61,11 +63,13 @@ public class RFImage implements TimeViewable {
 		
 		//convert short[] to int[]
 		int[] intFrame1d = new int[frame1d.length];
+		//byte[] byteFrame1d = new byte[frame1d.length];
+
 		for (int i = 0; i < frame1d.length; i++) {
-			intFrame1d[i] = (int) frame1d[i];
+			intFrame1d[i] = Math.abs(((frame1d[i]))/256);
 		}
 
-		Bitmap bmp = Bitmap.createBitmap(intFrame1d, width, height, Bitmap.Config.ARGB_4444);
+		Bitmap bmp = Bitmap.createBitmap(intFrame1d, height, width, Bitmap.Config.RGB_565);
 		
 		return bmp;
 	}
@@ -93,6 +97,10 @@ public class RFImage implements TimeViewable {
 	
 	public int getFrameSize() {
 		return height*width;
+	}
+	
+	public int getCurrentFrame() {
+		return currentFrame;
 	}
 
 
