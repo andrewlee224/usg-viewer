@@ -1,6 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
+    <item android:id="@+id/colormap_settings"
+        android:title="@string/colormap_settings"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="never">
+        <menu>	
+		    <group android:checkableBehavior="single">
+		        <item android:id="@+id/optionBlueMap"
+		        	android:title="@string/optionBlueMap" 
+		        	android:checked="true" />
+		        <item android:id="@+id/optionGrayMap"
+		            android:title="@string/optionGrayMap" />
+		    </group>
+       </menu> 
+    </item>
 </menu>

@@ -12,4 +12,9 @@
 
     <!-- ImageViewActivity -->
     <string name="usgImgDescr">Ultrasound image</string>
+    <string name="colormap_settings">Colormap Settings</string>
+    
+    <!--  ColorMap Option Menu -->
+    <string name="optionBlueMap">Blue</string>
+    <string name="optionGrayMap">Gray</string>
 </resources>
