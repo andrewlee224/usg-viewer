@@ -2,8 +2,8 @@ package com.example.usgviewer;
 
 import java.io.IOException;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public interface TimeViewable extends Viewable {
-	Bitmap getAtFrame(int frame) throws IOException;
+	Drawable getAtFrame(int frame) throws IOException;
 }

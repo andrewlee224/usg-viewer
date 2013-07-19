@@ -2,8 +2,8 @@ package com.example.usgviewer;
 
 import java.io.IOException;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public interface Viewable {
-	Bitmap getImg() throws IOException;
+	Drawable getImg() throws IOException;
 }
