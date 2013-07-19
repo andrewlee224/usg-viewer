@@ -5,10 +5,12 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,7 +26,6 @@ public class ImageViewActivity extends Activity {
 
 	private ImageView usgImgView;
 	private RFImage rfImg;
-	private int currentFrame;
 	private TextView frameNoText;
 	private Button prevFrameButton;
 	private Button nextFrameButton;
@@ -41,13 +42,11 @@ public class ImageViewActivity extends Activity {
 
         try {
         	rfImg.createHeaders();
-	        Bitmap initialFrame = rfImg.getImg();
-	        BitmapDrawable frameDrawable = new BitmapDrawable(initialFrame);
+	        //Drawable frameDrawable = rfImg.getImg();
 	        usgImgView = (ImageView) findViewById(R.id.imageView1);
-	        //usgImgView.setImageBitmap(initialFrame);
-	        usgImgView.setBackgroundDrawable(frameDrawable);
-	        //usgImgView.setMaxHeight(50);
+	        //usgImgView.setBackgroundDrawable(frameDrawable);
 	        usgImgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+	        new LoadImageTask().execute(1);
         } catch (IOException e) {
         	Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -61,29 +60,28 @@ public class ImageViewActivity extends Activity {
         prevFrameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View view) {
         		int prevFrame = rfImg.getCurrentFrame() - 1;
-        		updateImgView(prevFrame);
-        		updateFrameNumTextView();
+        		new LoadImageTask().execute(prevFrame);
+        		updateFrameNumTextView(prevFrame);
         	}
         });
         
         nextFrameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View view) {
         		int nextFrame = rfImg.getCurrentFrame() + 1;
-        		updateImgView(nextFrame);
-        		updateFrameNumTextView();
+        		new LoadImageTask().execute(nextFrame);
+        		updateFrameNumTextView(nextFrame);
         	}
         });
     }
 
-    public void setBitmapToView(Bitmap bmp, ImageView imgView) {
-    	BitmapDrawable frameDrawable = new BitmapDrawable(bmp);
+    public void setDrawableToView(Drawable frameDrawable, ImageView imgView) {
     	imgView.setBackgroundDrawable(frameDrawable);
     }
     
     public void updateImgView(int frame) {
     	try {
-	    	Bitmap bmp = rfImg.getAtFrame(frame);
-	    	setBitmapToView(bmp, usgImgView);
+	    	Drawable frameDrawable = rfImg.getAtFrame(frame);
+	    	setDrawableToView(frameDrawable, usgImgView);
     	} catch (IOException e) {
     		Toast.makeText(this, "Error while loading frame", Toast.LENGTH_LONG).show();
     	}
@@ -93,9 +91,50 @@ public class ImageViewActivity extends Activity {
     	frameNoText.setText("Frame " + rfImg.getCurrentFrame() + " of " + rfImg.getFrames());
     }
     
+    public void updateFrameNumTextView(int frame) {
+    	frameNoText.setText("Frame " + frame + " of " + rfImg.getFrames());
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_image_view, menu);
         return true;
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	if (item.isChecked()) { 
+    		return super.onOptionsItemSelected(item);
+    	} else {
+	        switch (item.getItemId()) {
+	            case R.id.optionBlueMap:
+	            	item.setChecked(true);
+	            	rfImg.setCm(ColorMap.Blue);
+	                break;
+	            case R.id.optionGrayMap:
+	            	item.setChecked(true);
+	            	rfImg.setCm(ColorMap.Grayscale);
+	            	break;
+	        }
+	        new LoadImageTask().execute(rfImg.getCurrentFrame());
+    	}
+        return super.onOptionsItemSelected(item);
+    }
+    
+	class LoadImageTask extends AsyncTask<Integer, Void, Boolean> {
+		private Drawable loadedDrawable;
+		public Boolean doInBackground(Integer... frames) {
+			try {
+				loadedDrawable = rfImg.getAtFrame(frames[0]);
+			} catch (IOException e) {
+				return false;
+			}
+			return true;
+		}
+		
+		public void onPostExecute(Boolean result) {
+			usgImgView.setBackgroundDrawable(loadedDrawable);
+			usgImgView.invalidate();
+		}
+	}
 }
